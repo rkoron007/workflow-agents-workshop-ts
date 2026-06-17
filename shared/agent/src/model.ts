@@ -174,11 +174,15 @@ class OpenAIClient implements ModelClient {
       { role: 'system', content: args.system },
       ...args.messages.flatMap(toOpenAIMessages),
     ]
+    const maxOutputTokens = args.sampling?.maxOutputTokens ?? DEFAULT_MAX_OUTPUT_TOKENS
+    const maxTokensParam = usesMaxCompletionTokens(args.model.model)
+      ? { max_completion_tokens: maxOutputTokens }
+      : { max_tokens: maxOutputTokens }
 
     const body: Record<string, unknown> = {
       model: args.model.model,
       messages,
-      max_tokens: args.sampling?.maxOutputTokens ?? DEFAULT_MAX_OUTPUT_TOKENS,
+      ...maxTokensParam,
       ...(args.sampling?.temperature !== undefined ? { temperature: args.sampling.temperature } : {}),
       ...(args.tools.length > 0
         ? {
@@ -239,6 +243,10 @@ interface OpenAIChatResponse {
 interface OpenAIChoice {
   message: { role: string; content?: string | null; tool_calls?: OpenAIToolCall[] }
   finish_reason?: string
+}
+
+function usesMaxCompletionTokens(model: string): boolean {
+  return /^o\d/.test(model) || model === 'o1' || model === 'o3'
 }
 
 function toOpenAIMessages(msg: Message): OpenAIMessage[] {
