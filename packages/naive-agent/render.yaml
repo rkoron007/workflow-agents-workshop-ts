@@ -29,6 +29,7 @@ projects:
               - key: ANTHROPIC_API_KEY
                 sync: false
               - key: OPENAI_API_KEY
+                sync: false
               - key: GITHUB_TOKEN
                 sync: false
               - key: NODE_ENV

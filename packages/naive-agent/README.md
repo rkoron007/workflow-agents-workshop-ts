@@ -32,6 +32,15 @@ npm run naive:dev                         # http://localhost:3000
 No API key required — the agent falls back to a mock model. Set `ANTHROPIC_API_KEY`
 or `OPENAI_API_KEY` for a real review. Then paste a public PR URL, e.g.
 `https://github.com/<owner>/<repo>/pull/<n>`.
+With tier-based models (`small`/`medium`/`large`), the runtime uses Anthropic
+when `ANTHROPIC_API_KEY` is present, or OpenAI when only `OPENAI_API_KEY` is present.
+
+If `AGENT_MODEL=mock` is set, the mock client is forced even when a real API key
+is present.
+
+`npm run naive:dev` loads env files (`../../.env`, then `./.env`) for local
+development. The production `start` command does not read `.env` files, so use
+Render environment variables in deployed services.
 
 ## Deploy
 
